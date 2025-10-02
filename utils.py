@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from database import load_data
-from auth import logout  # Add this import
+from auth import logout
 
 def hide_streamlit_elements():
     """Hide only the GitHub icon while keeping deploy button"""
@@ -46,179 +46,225 @@ def hide_streamlit_elements():
         display: none !important;
     }
     
-    /* Custom navbar styling */
-    .navbar {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 0.8rem 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        border: none;
-        backdrop-filter: blur(10px);
-        position: sticky;
-        top: 10px;
+    /* Click-to-Show Navbar Styles - SIMPLIFIED */
+    .navbar-toggle-container {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 1000;
+        width: 90%;
+        max-width: 400px;
     }
-    .navbar-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    .navbar-brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        color: white;
-        font-size: 1.4rem;
-        font-weight: 700;
-        text-decoration: none;
-    }
-    .navbar-brand-icon {
-        font-size: 1.8rem;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-    }
-    .navbar-menu {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-    .nav-btn {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-        padding: 0.6rem 1.2rem;
-        border-radius: 25px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        cursor: pointer;
-        backdrop-filter: blur(10px);
-        position: relative;
-        overflow: hidden;
-    }
-    .nav-btn:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        border-color: rgba(255, 255, 255, 0.4);
-    }
-    .nav-btn.active {
-        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        border-color: rgba(255, 255, 255, 0.6);
-        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-    }
-    .nav-btn.active::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
+    
+    .navbar-toggle-btn {
         width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-        transition: left 0.5s;
-    }
-    .nav-btn.active:hover::before {
-        left: 100%;
-    }
-    .navbar-user-info {
-        display: flex;
-        align-items: center;
-        gap: 15px;
+        padding: 0.8rem 1.5rem;
+        border-radius: 25px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        font-size: 0.85rem;
-        flex-wrap: wrap;
-    }
-    .user-badge {
-        margin-bottom:10px;
-        background: linear-gradient(135deg, #00b894, #00a085);
-        color: white;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
+        border: none;
         font-weight: 600;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 3px 10px rgba(0, 184, 148, 0.3);
-    }
-    .trial-badge {
-        background: linear-gradient(135deg, #fdcb6e, #e17055);
-        color: white;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 3px 10px rgba(253, 203, 110, 0.3);
-    }
-    .logout-btn {
-        background: linear-gradient(135deg, #e17055, #d63031);
-        color: white;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
+        font-size: 1rem;
         cursor: pointer;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         transition: all 0.3s ease;
-        font-weight: 600;
-        font-size: 0.85rem;
-        box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
     }
-    .logout-btn:hover {
+    
+    .navbar-toggle-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-        background: linear-gradient(135deg, #d63031, #c23616);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
     }
-    .nav-divider {
-        width: 2px;
-        height: 30px;
-        background: rgba(255, 255, 255, 0.3);
-        margin: 0 10px;
-    }
-    @media (max-width: 768px) {
-        .navbar {
-            padding: 0.8rem 1rem;
+        
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translate(-50%, 20px);
         }
-        .navbar-container {
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .navbar-menu {
-            justify-content: center;
-            gap: 5px;
-        }
-        .navbar-user-info {
-            justify-content: center;
-            text-align: center;
-            gap: 10px;
-        }
-        .nav-btn {
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
+        to {
+            opacity: 1;
+            transform: translate(-50%, 0);
         }
     }
     
-    /* Floating animation for brand */
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-3px); }
+    .navbar-expanded-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
-    .navbar-brand {
-        animation: float 4s ease-in-out infinite;
+    
+    .nav-expanded-btn {
+        background: #f8f9fa;
+        color: #333;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+    }
+    
+    .nav-expanded-btn:hover {
+        background: #e9ecef;
+        border-color: #667eea;
+    }
+    
+    .nav-expanded-btn.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+    
+    .user-info-expanded {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .user-badge-expanded {
+        background: #00b894;
+        color: white;
+        padding: 0.6rem 1rem;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+    }
+    
+    .admin-badge {
+        background: #0984e3 !important;
+    }
+    
+    .trial-badge-expanded {
+        background: #fdcb6e;
+        color: #333;
+        padding: 0.6rem 1rem;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+    }
+    
+    .logout-btn-expanded {
+        background: #e17055;
+        color: white;
+        border: none;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        margin-top: 5px;
+    }
+    
+    .logout-btn-expanded:hover {
+        background: #d63031;
+    }
+    
+    /* Prevent content from being hidden behind navbar */
+    .stApp {
+        padding-bottom: 100px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-def navbar_component(menu_options):
-    """Create a beautiful top navigation bar component"""
+def navbar_collapsible_component(menu_options):
+    """Click-to-Show Navbar without purple div"""
     
-    # Initialize selected menu in session state if not exists
+    # Initialize session state variables
+    if 'selected_nav_menu' not in st.session_state:
+        st.session_state.selected_nav_menu = menu_options[0]
+    if 'navbar_expanded' not in st.session_state:
+        st.session_state.navbar_expanded = False
+    
+    # Toggle button (always visible at bottom)
+    st.markdown('<div class="navbar-toggle-container">', unsafe_allow_html=True)
+    
+    toggle_icon = "🏫" if not st.session_state.navbar_expanded else "📱"
+    toggle_label = "British School Karachi" if not st.session_state.navbar_expanded else "Hide Menu"
+    
+    if st.button(f"{toggle_icon} {toggle_label}", key="navbar_toggle", use_container_width=True):
+        st.session_state.navbar_expanded = not st.session_state.navbar_expanded
+        st.rerun()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Expanded navbar content
+    if st.session_state.navbar_expanded:
+        st.markdown('<div class="navbar-expanded">', unsafe_allow_html=True)
+        
+        # Navigation buttons
+        icon_map = {
+            "Enter Fees": "💰",
+            "View All Records": "📋",
+            "Paid & Unpaid Students Record": "✅",
+            "Student Yearly Report": "📊",
+            "User Management": "👥",
+            "Set Student Fees": "💸"
+        }
+        
+        st.markdown('<div class="navbar-expanded-content">', unsafe_allow_html=True)
+        
+        for option in menu_options:
+            is_active = st.session_state.selected_nav_menu == option
+            icon = icon_map.get(option, "📄")
+            
+            button_label = f"{icon} {option}"
+            
+            if st.button(button_label, key=f"exp_nav_{option}", use_container_width=True):
+                st.session_state.selected_nav_menu = option
+                st.session_state.navbar_expanded = False
+                st.rerun()
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # User info and logout
+        st.markdown('<div class="user-info-expanded">', unsafe_allow_html=True)
+        
+        user_type = "Admin" if st.session_state.get("is_admin", False) else "User"
+        username = st.session_state.get("current_user", "")
+        
+        admin_class = "admin-badge" if st.session_state.get("is_admin", False) else ""
+        st.markdown(
+            f'<div class="user-badge-expanded {admin_class}">👤 {user_type}: {username}</div>',
+            unsafe_allow_html=True
+        )
+        
+        trial_remaining = st.session_state.get("trial_remaining", "")
+        if trial_remaining:
+            st.markdown(
+                f'<div class="trial-badge-expanded">⏰ {trial_remaining}</div>',
+                unsafe_allow_html=True
+            )
+        
+        if st.button("🚪 Logout", key="exp_nav_logout", use_container_width=True):
+            logout()
+            st.rerun()
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    return st.session_state.selected_nav_menu
+
+def navbar_component(menu_options):
+    """Original top navigation bar component"""
+    
     if 'selected_nav_menu' not in st.session_state:
         st.session_state.selected_nav_menu = menu_options[0]
     
-    # Create navbar container
     with st.container():
         st.markdown("""
         <div class="navbar">
@@ -228,17 +274,15 @@ def navbar_component(menu_options):
                     British School Karachi
                 </div>
                 
+                <div class="navbar-menu">
         """, unsafe_allow_html=True)
         
-        # Create navigation buttons
         for option in menu_options:
             is_active = st.session_state.selected_nav_menu == option
-            active_class = "active" if is_active else ""
             
-            # Get appropriate icon for each menu item
             icon_map = {
                 "Enter Fees": "💰",
-                "View All Records": "👀", 
+                "View All Records": "📋", 
                 "Paid & Unpaid Students Record": "✅",
                 "Student Yearly Report": "📊",
                 "User Management": "👥",
@@ -252,36 +296,82 @@ def navbar_component(menu_options):
                 st.session_state.selected_nav_menu = option
                 st.rerun()
         
-        st.markdown("""
-                </div>
-                
-                <div class="navbar-user-info">
-        """, unsafe_allow_html=True)
+        st.markdown("""</div>""", unsafe_allow_html=True)
         
-        # User info
+        st.markdown("""<div class="navbar-user-info">""", unsafe_allow_html=True)
+        
         user_type = "Admin" if st.session_state.is_admin else "User"
         st.markdown(f'<div class="user-badge">👤 {user_type}: {st.session_state.current_user}</div>', 
                    unsafe_allow_html=True)
         
-        # Trial info
         if st.session_state.trial_remaining:
             st.markdown(f'<div class="trial-badge">⏰ {st.session_state.trial_remaining}</div>', 
                        unsafe_allow_html=True)
         
-        # Divider
         st.markdown('<div class="nav-divider"></div>', unsafe_allow_html=True)
         
-        # Logout button
         if st.button("🚪 Logout", key="navbar_logout", use_container_width=False):
-            logout()  # This will now work with the import
+            logout()
             st.rerun()
         
+        st.markdown("""</div>""", unsafe_allow_html=True)
+        st.markdown("""</div>""", unsafe_allow_html=True)
+    
+    return st.session_state.selected_nav_menu
+
+def navbar_bottom_component(menu_options):
+    """Bottom-fixed navbar"""
+    if 'selected_nav_menu' not in st.session_state:
+        st.session_state.selected_nav_menu = menu_options[0]
+
+    with st.container():
         st.markdown("""
-                </div>
+        <div class="navbar-bottom">
+          <div class="navbar-container">
+            <div class="navbar-menu">
+        """, unsafe_allow_html=True)
+
+        icon_map = {
+            "Enter Fees": "💰",
+            "View All Records": "📋",
+            "Paid & Unpaid Students Record": "✅",
+            "Student Yearly Report": "📊",
+            "User Management": "👥",
+            "Set Student Fees": "💸"
+        }
+
+        for option in menu_options:
+            label = f"{icon_map.get(option, '📄')} {option}"
+            if st.button(label, key=f"bnav_{option}", help=f"Go to {option}"):
+                st.session_state.selected_nav_menu = option
+                st.rerun()
+
+        st.markdown("""
             </div>
+            <div class="navbar-user-info">
+        """, unsafe_allow_html=True)
+
+        user_type = "Admin" if st.session_state.get("is_admin") else "User"
+        st.markdown(
+            f'<div class="user-badge">👤 {user_type}: {st.session_state.get("current_user","")}</div>',
+            unsafe_allow_html=True
+        )
+        if st.session_state.get("trial_remaining"):
+            st.markdown(
+                f'<div class="trial-badge">⏰ {st.session_state["trial_remaining"]}</div>',
+                unsafe_allow_html=True
+            )
+
+        if st.button("🚪 Logout", key="bnav_logout"):
+            logout()
+            st.rerun()
+
+        st.markdown("""
+            </div>
+          </div>
         </div>
         """, unsafe_allow_html=True)
-    
+
     return st.session_state.selected_nav_menu
 
 def format_currency(val):
@@ -339,7 +429,7 @@ def get_unpaid_months(student_id):
     unpaid_months = [month for month in all_months if month not in paid_months]
     
     return unpaid_months
-# [file content end]
+
 def get_student_fee_amount(student_id, fee_type):
     """Get specific fee amount for a student from database"""
     from database import load_student_fees
@@ -364,3 +454,4 @@ def get_student_fee_amount(student_id, fee_type):
         "admission": 1000
     }
     return default_fees.get(fee_type, 0)
+# [file content end]

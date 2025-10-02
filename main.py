@@ -8,7 +8,7 @@ from home import home_page
 from fees_entry import fees_entry_page
 from reports import reports_page
 from admin import admin_page
-from utils import hide_streamlit_elements, navbar_component
+from utils import hide_streamlit_elements, navbar_component, navbar_collapsible_component
 from database import initialize_files
 
 def main():
@@ -46,7 +46,8 @@ def main():
         menu_options = ["Enter Fees"]
     
     # Display navbar and get selected menu
-    selected_menu = navbar_component(menu_options)
+    # selected_menu = navbar_component(menu_options)
+    selected_menu = navbar_collapsible_component(menu_options)
     
     # Route to appropriate page based on navbar selection
     if selected_menu == "Enter Fees":
